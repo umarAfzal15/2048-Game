@@ -103,18 +103,18 @@ void gamePlay(FILE *fptr, char playerName[], int grid[4][4]) {
     }
     //printf("%d%d\n", grid[row][col]);
     playerName[strcspn(playerName, "\n")] = '\0';
-    printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, score, moves);
+    printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, score, moves);
     for(int i=0; i<4; i++){
+        printf("\t\t\t\t");
         for(int j=0; j<4; j++){
             if(grid[i][j]==2){
-                printf("%d  ", grid[i][j]);
+                printf("%d\t\b", grid[i][j]);
             }else{
                 grid[i][j] = 0;
-                printf("%d  ", grid[i][j]);
-            }
-            
+                printf("%d\t\b", grid[i][j]);
+            } 
         }
-        printf("\n");
+        printf("\n\n");
     }
 
     i=0;
@@ -124,6 +124,7 @@ void gamePlay(FILE *fptr, char playerName[], int grid[4][4]) {
         keyPressed = _getch();
         if(keyPressed == 0 || keyPressed == 224){
             //printf("I am in if\n");
+            moves++;
             switch (_getch()) {
                 case 72: 
                     //printf("Up Arrow\n");
@@ -144,21 +145,11 @@ void gamePlay(FILE *fptr, char playerName[], int grid[4][4]) {
                 default:
                     break;
             }
-            moves++;
-             //function call
-            //printf("\nI am in now agian in called below\n");
         }else {
-            // It's a NORMAL key (like 'q', 'x', or 'Enter')
-            // This is where your exit logic should live!
             printf("\nThank you for playing the Game!\n");
             exit(0);
         }
-        // else if(keyPressed=='d' || keyPressed=='D'){
-            
-        // }else if(keyPressed=='w' || keyPressed=='W'){
-            
-        // }else if(keyPressed=='s' || keyPressed=='S'){
-        // }
+      
         // srand(time(0));
         // row = rand() % 4;
         // col = rand() % 4;
@@ -325,28 +316,30 @@ void pressedLeft(int *moves, int *score, char playerName[], int grid[4][4]){
    // printf("\nThis is the actual printing\n");
     if(mergeCondition == 2 || mergeCondition == 0){
         system("cls");
-        printf("\nThis is the actual printing\n");
-        printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
+        //printf("\nThis is the actual printing\n");
+        printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
+            printf("\t\t\t\t");
             for(j=0; j<4; j++){
-                printf("%d  ", grid[i][j]);
+                printf("%d\t\b", grid[i][j]);
             }
-            printf("\n");
+            printf("\n\n");
         }
     }else {
         system("cls");
-        printf("\nThis is the actual printing\n");
-        printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
+        //printf("\nThis is the actual printing\n");
+        printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
+            printf("\t\t\t\t");
             for(j=0; j<4; j++){
-                printf("%d  ", grid[i][j]);
+                printf("%d\t\b", grid[i][j]);
             }
-            printf("\n");
+            printf("\n\n");
         }
         printf("The Game has Finished!\n");
         exit(0);
     }
-    printf("\nI am in pressedLeft bottom\n");
+    //printf("\nI am in pressedLeft bottom\n");
 }
 
 
@@ -488,29 +481,31 @@ void pressedRight(int *moves, int *score, char playerName[], int grid[4][4]){
    // printf("\nThis is the actual printing\n");
     if(mergeCondition == 2 || mergeCondition == 0){
         system("cls");
-        printf("\nThis is the actual printing\n");
-        printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
+        //printf("\nThis is the actual printing\n");
+        printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
+            printf("\t\t\t\t");
             for(j=0; j<4; j++){
-                printf("%d  ", grid[i][j]);  
+                printf("%d\t\b", grid[i][j]);  
             }
-            printf("\n");
+            printf("\n\n");
         }
     }else {
         system("cls");
-        printf("\nThis is the actual printing\n");
-        printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
+        //printf("\nThis is the actual printing\n");
+        printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
+            printf("\t\t\t\t");
             for(j=0; j<4; j++){
-                printf("%d  ", grid[i][j]);
+                printf("%d\t\b", grid[i][j]);
             }
-            printf("\n");
+            printf("\n\n");
         }
         printf("The Game has Finished!\n");
         exit(0);
     }
 
-    printf("\nI am in pressedRight bottom\n");
+    //printf("\nI am in pressedRight bottom\n");
 }
 void pressedUp(int *moves, int *score, char playerName[], int grid[4][4]){
 
@@ -650,28 +645,30 @@ void pressedUp(int *moves, int *score, char playerName[], int grid[4][4]){
    // printf("\nThis is the actual printing\n");
     if(mergeCondition == 2 || mergeCondition == 0){
         system("cls");
-        printf("\nThis is the actual printing\n");
-        printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
+        //printf("\nThis is the actual printing\n");
+        printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
+            printf("\t\t\t\t");
             for(j=0; j<4; j++){
-                printf("%d  ", grid[i][j]);
+                printf("%d\t\b", grid[i][j]);
             }
-            printf("\n");
+            printf("\n\n");
         }
     }else {
         system("cls");
-        printf("\nThis is the actual printing\n");
-        printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
+        //printf("\nThis is the actual printing\n");
+        printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
+            printf("\t\t\t\t");
             for(j=0; j<4; j++){
-                printf("%d  ", grid[i][j]);
+                printf("%d\t\b", grid[i][j]);
             }
-            printf("\n");
+            printf("\n\n");
         }
         printf("The Game has Finished!\n");
         exit(0);
     }
-    printf("\nI am in pressedUp bottom\n");
+    //printf("\nI am in pressedUp bottom\n");
 }
 void pressedDown(int *moves, int *score, char playerName[], int grid[4][4]){
     int mergeCondition=0, tileValue, mergedposition=0;
@@ -810,26 +807,28 @@ void pressedDown(int *moves, int *score, char playerName[], int grid[4][4]){
     //printing
     if(mergeCondition == 2 || mergeCondition == 0){
         system("cls");
-        printf("\nThis is the actual printing\n");
-        printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
+        //printf("\nThis is the actual printing\n");
+        printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
+            printf("\t\t\t\t");
             for(j=0; j<4; j++){
-                printf("%d  ", grid[i][j]);
+                printf("%d\t\b", grid[i][j]);
             }
-            printf("\n");
+            printf("\n\n");
         }
     }else {
         system("cls");
-        printf("\nThis is the actual printing\n");
-        printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
+        //printf("\nThis is the actual printing\n");
+        printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
+            printf("\t\t\t\t");
             for(j=0; j<4; j++){
-                printf("%d  ", grid[i][j]);
+                printf("%d\t\b", grid[i][j]);
             }
-            printf("\n");
+            printf("\n\n");
         }
         printf("The Game has Finished!\n");
         exit(0);
     }
-    printf("\nI am in pressedLeft bottom\n");
+    //printf("\nI am in pressedLeft bottom\n");
 }
