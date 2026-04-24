@@ -7,10 +7,10 @@
 
 //these are declarations only
 void gamePlay(FILE *fptr, char playerNmae[], int grid[4][4]);
-void pressedLeft(int *moves, int *score, char playerName[], int grid[4][4]);
-void pressedRight(int *moves, int *score, char playerName[], int grid[4][4]);
-void pressedUp(int *moves, int *score, char playerName[], int grid[4][4]);
-void pressedDown(int *moves,int *score, char playerName[],  int grid[4][4]);
+void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
+void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
+void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
+void pressedDown(FILE *fptr, int *moves,int *score, char playerName[],  int grid[4][4]);
 
 //It hides cursor
 void hideCursor() {
@@ -68,7 +68,7 @@ int main(){
         }
         hideCursor();
         system("cls");
-        fputs(playerName, fptr);
+        //fputs(playerName, fptr);
         gamePlay(fptr, playerName, grid); // function call
     }else if(option==2){
 
@@ -83,7 +83,8 @@ int main(){
 
 //this handles Game Play
 void gamePlay(FILE *fptr, char playerName[], int grid[4][4]) {
-    // Game Play Here 
+    // Game Play Here
+    //FILE** fptr1 = fptr; 
     int keyPressed;
     int score=0;
     int moves=0;
@@ -128,25 +129,27 @@ void gamePlay(FILE *fptr, char playerName[], int grid[4][4]) {
             switch (_getch()) {
                 case 72: 
                     //printf("Up Arrow\n");
-                    pressedUp(&moves, &score, playerName, grid);
+                    pressedUp(fptr, &moves, &score, playerName, grid);
                     break;
                 case 80:
                     //printf("Down Arrow\n");
-                    pressedDown(&moves, &score, playerName, grid);
+                    pressedDown(fptr, &moves, &score, playerName, grid);
                     break;
                 case 75:
                     //printf("Left Arrow\n");
-                    pressedLeft(&moves, &score, playerName, grid);
+                    pressedLeft(fptr, &moves, &score, playerName, grid);
                     break;
                 case 77:
                     //printf("Right Arrow\n");
-                    pressedRight(&moves, &score, playerName, grid);
+                    pressedRight(fptr, &moves, &score, playerName, grid);
                     break;
                 default:
                     break;
             }
         }else {
             printf("\nThank you for playing the Game!\n");
+            fprintf(fptr, "%s,%d,%d\n", playerName, score, moves);
+            fclose(fptr);
             exit(0);
         }
       
@@ -179,7 +182,7 @@ void gamePlay(FILE *fptr, char playerName[], int grid[4][4]) {
 }
 
 //this handles left key move
-void pressedLeft(int *moves, int *score, char playerName[], int grid[4][4]){
+void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
     int mergeCondition=0, tileValue, mergedposition=0;
     int i, j, k, row, col, swap=0, isGenrated=1;
@@ -337,13 +340,15 @@ void pressedLeft(int *moves, int *score, char playerName[], int grid[4][4]){
             printf("\n\n");
         }
         printf("The Game has Finished!\n");
+        fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
+        fclose(fptr);
         exit(0);
     }
     //printf("\nI am in pressedLeft bottom\n");
 }
 
 
-void pressedRight(int *moves, int *score, char playerName[], int grid[4][4]){
+void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
     int mergeCondition=0, tileValue, mergedposition=0;
     int i, j, k, row, col, swap=0, isGenrated=1;
@@ -502,12 +507,13 @@ void pressedRight(int *moves, int *score, char playerName[], int grid[4][4]){
             printf("\n\n");
         }
         printf("The Game has Finished!\n");
+        fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
+        fclose(fptr);
         exit(0);
     }
-
     //printf("\nI am in pressedRight bottom\n");
 }
-void pressedUp(int *moves, int *score, char playerName[], int grid[4][4]){
+void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
     int mergeCondition=0, tileValue, mergedposition=0;
     int i, j, k, row, col, swap=0, isGenrated=1;
@@ -666,11 +672,13 @@ void pressedUp(int *moves, int *score, char playerName[], int grid[4][4]){
             printf("\n\n");
         }
         printf("The Game has Finished!\n");
+        fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
+        fclose(fptr);
         exit(0);
     }
     //printf("\nI am in pressedUp bottom\n");
 }
-void pressedDown(int *moves, int *score, char playerName[], int grid[4][4]){
+void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
     int mergeCondition=0, tileValue, mergedposition=0;
     int i, j, k, row, col, swap=0, isGenrated=1;
 
@@ -828,6 +836,8 @@ void pressedDown(int *moves, int *score, char playerName[], int grid[4][4]){
             printf("\n\n");
         }
         printf("The Game has Finished!\n");
+        fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
+        fclose(fptr);
         exit(0);
     }
     //printf("\nI am in pressedLeft bottom\n");
