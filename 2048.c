@@ -5,7 +5,6 @@
 #include <time.h>
 #include <conio.h>
 
-//these are declarations only
 void gamePlay(FILE *fptr, int *moves, int *score, char playerNmae[], int grid[4][4]);
 void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
 void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
@@ -20,6 +19,14 @@ void hideCursor() {
     CONSOLE_CURSOR_INFO info;
     info.dwSize = 100;
     info.bVisible = FALSE;
+    SetConsoleCursorInfo(consoleHandle, &info);
+}
+
+void showCursor() {
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO info;
+    info.dwSize = 100;
+    info.bVisible = TRUE;
     SetConsoleCursorInfo(consoleHandle, &info);
 }
 
@@ -57,7 +64,8 @@ int main(){
     getchar();
     system("cls");
 
-    if(option==1){
+    while(1){
+        if(option==1){
         printf("Please Enter Your Name: ");
         fgets(playerName, sizeof(playerName), stdin);
         system("cls");
@@ -78,26 +86,30 @@ int main(){
             }else{
                 break;
             }
-            // if(ok != 'y' && ok != 'Y'){
-            //     printf("Please Enter \"y\" ");
-            //     //getchar();
-            //     scanf(" %c", &ok);
-            // }else{
-            //     break;
-            // }
         }
         //hideCursor();
         system("cls");
         //fputs(playerName, fptr);
         gamePlay(fptr, &moves, &score, playerName, grid); // function call
-    }else if(option==2){
-        showTopThreePlayes(fptr);
-    }else if(option==3){
-        gameInsights(fptr);
-    }else if(option==4){
-        exit(0);
-    }
+        }else if(option==2){
+            showTopThreePlayes(fptr);
+        }else if(option==3){
+            gameInsights(fptr);
+        }else if(option==4){
+            printf("Thank You for Playing the Game!");
+            exit(0);
+        }
 
+        printf("\n~~~~~~Please Select From The Menu~~~~~~\n");
+        printf("1. Play 2048 Game\n");
+        printf("2. Show Top Three players\n");
+        printf("3. Search Your Game Insights\n");
+        printf("4. Exit The Game\n");
+        printf("Type Here ==> ");
+        scanf("%d", &option);
+        getchar();
+        system("cls");
+    }
     return 0;
 }
 
@@ -170,36 +182,11 @@ void gamePlay(FILE *fptr, int *moves, int *score, char playerName[], int grid[4]
             printf("\n\t\t\t  Thank you for playing the Game!\n");
             fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
             fclose(fptr);
-            exit(0);
+            return;
         }
-      
-        // srand(time(0));
-        // row = rand() % 4;
-        // col = rand() % 4;
-        // if(grid[row][col] == 2){
-        //     continue;
-        // }else{
-        //     grid[row][col] = 2;
-        //     i++;
-        // }
     }
     return;
 
-    // printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, score, moves);
-    // for(int i=0; i<4; i++){
-    //     for(int j=0; j<4; j++){
-    //         if(grid[i][j]==2){
-    //             printf("%d  ", grid[i][j]);
-    //         }else{
-    //             grid[i][j] = 0;
-    //             printf("%d  ", grid[i][j]);
-    //         }
-            
-    //     }
-    //     printf("\n");
-    // }
-    //system("cls");
-    //printf("%s", playerName);
 }
 
 //this handles left key move
@@ -363,7 +350,7 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
         printf("The Game has Finished!\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
-        exit(0);
+        return;
     }
     return;
     //printf("\nI am in pressedLeft bottom\n");
@@ -531,7 +518,7 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
         printf("The Game has Finished!\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
-        exit(0);
+        return;
     }
     return;
     //printf("\nI am in pressedRight bottom\n");
@@ -697,7 +684,7 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
         printf("The Game has Finished!\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
-        exit(0);
+        return;
     }
     return;
     //printf("\nI am in pressedUp bottom\n");
@@ -862,7 +849,7 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
         printf("The Game has Finished!\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
-        exit(0);
+        return;
     }
     return;
     //printf("\nI am in pressedLeft bottom\n");
@@ -913,13 +900,38 @@ void showTopThreePlayes(FILE* fptr){
     }
 
     fclose(fptr);
-
+    hideCursor();
+    getchar();
+    system("cls");
     return;
 }
 
 void gameInsights(FILE* fptr){
+    showCursor();
     char name[50];
+    char searchName[50];
+
+    int Score, Moves, played=0;
+
+    fptr = fopen("2048_Game.txt", "r");
 
     printf("Enter your Name: ");
-    fgets(name, sizeof(name[50]/sizeof(int)), fptr);
+    fgets(name, sizeof(name), stdin);
+    name[strcspn(name, "\n")] = '\0';
+    printf("~~~~~Your insights~~~~~\n");
+    int i=1;
+    while (fscanf(fptr, " %49[^,],%d,%d", searchName, &Score, &Moves) == 3){
+        if (strcmp(searchName, name) == 0) {
+            printf("Game No.%d): Name: %s,\tScore: %d,\tMoves: %d\n", i, searchName, Score, Moves);
+            played++;
+            i++;
+        }
+    }
+
+    printf("Total Games Played: %d", played);
+    fclose(fptr);
+    hideCursor();
+    getchar();
+    system("cls");
+    return;
 }
