@@ -11,7 +11,7 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
 void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
 void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
 void pressedDown(FILE *fptr, int *moves,int *score, char playerName[],  int grid[4][4]);
-isGameContinue(int *mergeCondition, int *checkZero);
+void isGameContinue(int *mergeCondition, int *checkZero, int grid[4][4]);
 void showTopThreePlayes(FILE* fptr);
 void gameInsights(FILE* fptr);
 
@@ -195,7 +195,7 @@ void gamePlay(FILE *fptr, int *moves, int *score, char playerName[], int grid[4]
 //this handles left key move
 void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
-    int mergeCondition=0, tileValue, mergedposition=0;
+    int mergeCondition=0, tileValue, mergedposition=0, checkZero = 0;
     int i, j, k, row, col, swap=0, isGenrated=1;
 
     for(k=0; k<4; k++){
@@ -309,54 +309,7 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
     // }
 
     //checking if merging is possible
-    mergeCondition = 0;
-    for(i=0; i<4; i++){
-        for(j=0; j<3; j++){
-            // if(grid[i][j] == 0){
-            //     mergeCondition = 1;
-            //     break;
-            // }else 
-            if(grid[i][j] == grid[i][j+1]){
-                mergeCondition = 1;
-                break;
-            }
-            // else if(grid[i][j] !=0 && mergeCondition == 0){
-            //         tileValue = grid[i][j];
-            //         mergeCondition++;
-            // }else if (grid[i][j] !=0 && mergeCondition != 0){
-            //     if(tileValue == grid[i][j]){
-            //         mergeCondition++;
-            //         break;
-            //     }else {
-            //         tileValue = grid[i][j];
-            //     } 
-            // } 
-        }
-        // if(mergeCondition == 2){
-        //     break;
-        // }else if(i<3){
-        //     mergeCondition = 0;
-        // }else 
-        if(mergeCondition == 1){
-            break;
-        }
-        // else if(mergeCondition = 2){
-        //     break;
-        // }
-    }
-
-    int checkZero = 0;
-    for(i=0; i<4; i++){
-        for(j=0; j<3; j++){
-            if(grid[i][j] == 0){
-                checkZero = 1;
-                break;
-            } 
-        } 
-        if(checkZero == 1){
-            break;
-        }
-    }
+    isGameContinue(&mergeCondition, &checkZero, grid);
 
     // if(mergeCondition != 0){
     //     for ( i = 0; i < 4; i++)
@@ -408,7 +361,7 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
 
 void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
-    int mergeCondition=0, tileValue, mergedposition=0;
+    int mergeCondition=0, tileValue, mergedposition=0, checkZero = 0;
     int i, j, k, row, col, swap=0, isGenrated=1;
 
     for(k=0; k<4; k++){
@@ -521,57 +474,7 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
     // }
 
     //checking if merging is possible
-    mergeCondition = 0;
-    for(i=0; i<4; i++){
-        for(j = 3; j > 0; j--){
-            // if(grid[i][j] == 0){
-            //     continue;
-            // }else if(grid[i][j] !=0 && mergeCondition == 0){
-            //         tileValue = grid[i][j];
-            //         mergeCondition++;
-            // }else if (grid[i][j] !=0 && mergeCondition != 0){
-            //     if(tileValue == grid[i][j]){
-            //         mergeCondition++;
-            //         break;
-            //     }else {
-            //         tileValue = grid[i][j];
-            //     }
-            // } 
-
-            // if(grid[i][j] == 0){
-            //     mergeCondition = 1;
-            //     break;
-            // }else 
-            if(grid[i][j] == grid[i][j-1]){
-                mergeCondition = 1;
-                break;
-            }
-        }
-        // if(mergeCondition == 2){
-        //     break;
-        // }else if(i<3){
-        //     mergeCondition = 0;
-        // }
-        if(mergeCondition == 1){
-            break;
-        }
-        // else if(mergeCondition = 2){
-        //     break;
-        // }
-    }
-
-    int checkZero = 0;
-    for(i=0; i<4; i++){
-        for(j = 3; j > 0; j--){
-            if(grid[i][j] == 0){
-                checkZero = 1;
-                break;
-            }
-        }
-        if(checkZero == 1){
-            break;
-        }
-    }
+    isGameContinue(&mergeCondition, &checkZero, grid);
 
     // if(mergeCondition != 0){
     //     for ( i = 0; i < 4; i++)
@@ -622,7 +525,7 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
 }
 void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
-    int mergeCondition=0, tileValue, mergedposition=0;
+    int mergeCondition=0, tileValue, mergedposition=0, checkZero = 0;
     int i, j, k, row, col, swap=0, isGenrated=1;
 
     for(k=0; k<4; k++){
@@ -735,58 +638,7 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
     // }
 
     //checking if merging is posible
-    mergeCondition = 0;
-    for(i=0; i<4; i++){
-        for(j=0; j<3; j++){
-            // if(grid[j][i] == 0){
-            //     continue;
-            // }else if(grid[j][i] !=0 && mergeCondition == 0){
-            //         tileValue = grid[j][i];
-            //         mergeCondition++;
-            // }else if (grid[j][i] !=0 && mergeCondition != 0){
-            //     if(tileValue == grid[j][i]){
-            //         mergeCondition++;
-            //         break;
-            //     }else {
-            //         tileValue = grid[j][i];
-            //     }
-            // } 
-
-            // if(grid[j][i] == 0){
-            //     mergeCondition = 1;
-            //     break;
-            // }else 
-            if(grid[j][i] == grid[j+1][i]){
-                mergeCondition = 1;
-                break;
-            }
-        }
-        // if(mergeCondition == 2){
-        //     break;
-        // }else if(i<3){
-        //     mergeCondition = 0;
-        // } 
-        if(mergeCondition == 1){
-            break;
-        }
-        // else if(mergeCondition = 2){
-        //     break;
-        // }
-    }
-
-
-    int checkZero = 0;
-    for(i=0; i<4; i++){
-        for(j=0; j<3; j++){
-            if(grid[j][i] == 0){
-                checkZero = 1;
-                break;
-            }
-        }
-        if(checkZero == 1){
-            break;
-        }
-    }
+    isGameContinue(&mergeCondition, &checkZero, grid);
 
     // if(mergeCondition != 0){
     //     for ( i = 0; i < 4; i++)
@@ -836,7 +688,7 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
     //printf("\nI am in pressedUp bottom\n");
 }
 void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
-    int mergeCondition=0, tileValue, mergedposition=0;
+    int mergeCondition=0, tileValue, mergedposition=0, checkZero = 0;
     int i, j, k, row, col, swap=0, isGenrated=1;
 
     for(k=0; k<4; k++){
@@ -950,56 +802,7 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
 
     //checking if merging is possible
     mergeCondition = 0;
-
-    for(i=0; i<4; i++){
-        for(j = 3; j > 0; j--){
-            // if(grid[j][i] == 0){
-            //     continue;
-            // }else if(grid[j][i] !=0 && mergeCondition == 0){
-            //     tileValue = grid[j][i];
-            //     mergeCondition++;
-            // }else if (grid[j][i] !=0 && mergeCondition != 0){
-            //     if(tileValue == grid[j][i]){
-            //         mergeCondition++;
-            //         break;
-            //     }else {
-            //         tileValue = grid[j][i];
-            //     }
-            // } 
-            // if(grid[j][i] == 0){
-                
-            //     break;
-            // }else 
-            if(grid[j][i] == grid[j-1][i]){
-                mergeCondition = 1;
-                break;
-            }
-        }
-        // if(mergeCondition == 2){
-        //     break;
-        // }else if(i<3){
-        //     mergeCondition = 0;
-        // }
-        if(mergeCondition == 1){
-            break;
-        }
-        // else if(mergeCondition = 2){
-        //     break;
-        // }
-    }
-
-    int checkZero = 0;
-    for(i=0; i<4; i++){
-        for(j = 3; j >= 0; j--){ 
-            if(grid[j][i] == 0){
-                checkZero = 1;
-                break;
-            }
-        }
-        if(checkZero == 1){
-            break;
-        }
-    }
+    isGameContinue(&mergeCondition, &checkZero, grid);
 
     // if(mergeCondition != 0){
     //     for ( i = 0; i < 4; i++)
@@ -1048,211 +851,173 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
     //printf("\nI am in pressedLeft bottom\n");
 }
 
-isGameContinue(int *mergeCondition, int *checkZero, int grid[4][4]){
+void isGameContinue(int *mergeCondition, int *checkZero, int grid[4][4]){
     *mergeCondition = 0;
     *checkZero = 0;
     int i, j;
 
-    for(i=0; i<4; i++){
-        for(j=0; j<3; j++){
-            // if(grid[i][j] == 0){
-            //     mergeCondition = 1;
-            //     break;
-            // }else 
-            if(grid[i][j] == grid[i][j+1]){
-                mergeCondition = 1;
-                break;
-            }
-            // else if(grid[i][j] !=0 && mergeCondition == 0){
-            //         tileValue = grid[i][j];
-            //         mergeCondition++;
-            // }else if (grid[i][j] !=0 && mergeCondition != 0){
-            //     if(tileValue == grid[i][j]){
-            //         mergeCondition++;
-            //         break;
-            //     }else {
-            //         tileValue = grid[i][j];
-            //     } 
-            // } 
-        }
-        // if(mergeCondition == 2){
-        //     break;
-        // }else if(i<3){
-        //     mergeCondition = 0;
-        // }else 
-        if(mergeCondition == 1){
-            break;
-        }
-        // else if(mergeCondition = 2){
-        //     break;
-        // }
-    }
+    for(int i = 0; i < 4; i++){
+        for(int j = 0; j < 4; j++){
 
-    int checkZero = 0;
-    for(i=0; i<4; i++){
-        for(j=0; j<3; j++){
             if(grid[i][j] == 0){
-                checkZero = 1;
-                break;
-            } 
-        } 
-        if(checkZero == 1){
-            break;
-        }
-    }
+                *checkZero = 1;
+            }
 
-    for(i=0; i<4; i++){
-        for(j = 3; j > 0; j--){
-            // if(grid[i][j] == 0){
-            //     continue;
-            // }else if(grid[i][j] !=0 && mergeCondition == 0){
-            //         tileValue = grid[i][j];
-            //         mergeCondition++;
-            // }else if (grid[i][j] !=0 && mergeCondition != 0){
-            //     if(tileValue == grid[i][j]){
-            //         mergeCondition++;
-            //         break;
-            //     }else {
-            //         tileValue = grid[i][j];
-            //     }
-            // } 
+            if(j < 3 && grid[i][j] == grid[i][j+1]){
+                *mergeCondition = 1;
+            }
 
-            // if(grid[i][j] == 0){
-            //     mergeCondition = 1;
-            //     break;
-            // }else 
-            if(grid[i][j] == grid[i][j-1]){
-                mergeCondition = 1;
-                break;
+            if(i < 3 && grid[i][j] == grid[i+1][j]){
+                *mergeCondition = 1;
+            }
+
+            if(*mergeCondition && *checkZero){
+                return;
             }
         }
-        // if(mergeCondition == 2){
-        //     break;
-        // }else if(i<3){
-        //     mergeCondition = 0;
-        // }
-        if(mergeCondition == 1){
-            break;
-        }
-        // else if(mergeCondition = 2){
-        //     break;
-        // }
     }
 
-    int checkZero = 0;
-    for(i=0; i<4; i++){
-        for(j = 3; j > 0; j--){
-            if(grid[i][j] == 0){
-                checkZero = 1;
-                break;
-            }
-        }
-        if(checkZero == 1){
-            break;
-        }
-    }
+    // for(i=0; i<4; i++){
+    //     for(j = 3; j > 0; j--){
+    //         // if(grid[i][j] == 0){
+    //         //     continue;
+    //         // }else if(grid[i][j] !=0 && mergeCondition == 0){
+    //         //         tileValue = grid[i][j];
+    //         //         mergeCondition++;
+    //         // }else if (grid[i][j] !=0 && mergeCondition != 0){
+    //         //     if(tileValue == grid[i][j]){
+    //         //         mergeCondition++;
+    //         //         break;
+    //         //     }else {
+    //         //         tileValue = grid[i][j];
+    //         //     }
+    //         // } 
 
-    for(i=0; i<4; i++){
-        for(j=0; j<3; j++){
-            // if(grid[j][i] == 0){
-            //     continue;
-            // }else if(grid[j][i] !=0 && mergeCondition == 0){
-            //         tileValue = grid[j][i];
-            //         mergeCondition++;
-            // }else if (grid[j][i] !=0 && mergeCondition != 0){
-            //     if(tileValue == grid[j][i]){
-            //         mergeCondition++;
-            //         break;
-            //     }else {
-            //         tileValue = grid[j][i];
-            //     }
-            // } 
+    //         // if(grid[i][j] == 0){
+    //         //     mergeCondition = 1;
+    //         //     break;
+    //         // }else 
+    //         if(grid[i][j] == grid[i][j-1]){
+    //             *mergeCondition = 1;
+    //             break;
+    //         }
+    //     }
+    //     // if(mergeCondition == 2){
+    //     //     break;
+    //     // }else if(i<3){
+    //     //     mergeCondition = 0;
+    //     // }
+    //     if(*mergeCondition == 1){
+    //         break;
+    //     }
+    //     // else if(mergeCondition = 2){
+    //     //     break;
+    //     // }
+    // }
 
-            // if(grid[j][i] == 0){
-            //     mergeCondition = 1;
-            //     break;
-            // }else 
-            if(grid[j][i] == grid[j+1][i]){
-                mergeCondition = 1;
-                break;
-            }
-        }
-        // if(mergeCondition == 2){
-        //     break;
-        // }else if(i<3){
-        //     mergeCondition = 0;
-        // } 
-        if(mergeCondition == 1){
-            break;
-        }
-        // else if(mergeCondition = 2){
-        //     break;
-        // }
-    }
+    // for(i=0; i<4; i++){
+    //     for(j = 3; j >= 0; j--){
+    //         if(grid[i][j] == 0){
+    //             *checkZero = 1;
+    //             break;
+    //         }
+    //     }
+    //     if(*checkZero == 1){
+    //         break;
+    //     }
+    // }
 
+    // for(i=0; i<4; i++){
+    //     for(j=0; j<3; j++){
+    //         // if(grid[j][i] == 0){
+    //         //     continue;
+    //         // }else if(grid[j][i] !=0 && mergeCondition == 0){
+    //         //         tileValue = grid[j][i];
+    //         //         mergeCondition++;
+    //         // }else if (grid[j][i] !=0 && mergeCondition != 0){
+    //         //     if(tileValue == grid[j][i]){
+    //         //         mergeCondition++;
+    //         //         break;
+    //         //     }else {
+    //         //         tileValue = grid[j][i];
+    //         //     }
+    //         // } 
 
-    int checkZero = 0;
-    for(i=0; i<4; i++){
-        for(j=0; j<3; j++){
-            if(grid[j][i] == 0){
-                checkZero = 1;
-                break;
-            }
-        }
-        if(checkZero == 1){
-            break;
-        }
-    }
+    //         // if(grid[j][i] == 0){
+    //         //     mergeCondition = 1;
+    //         //     break;
+    //         // }else 
+    //         if(grid[j][i] == grid[j+1][i]){
+    //             *mergeCondition = 1;
+    //             break;
+    //         }
+    //     } 
+    //     if(*mergeCondition == 1){
+    //         break;
+    //     }
+    // }
 
-    for(i=0; i<4; i++){
-        for(j = 3; j > 0; j--){
-            // if(grid[j][i] == 0){
-            //     continue;
-            // }else if(grid[j][i] !=0 && mergeCondition == 0){
-            //     tileValue = grid[j][i];
-            //     mergeCondition++;
-            // }else if (grid[j][i] !=0 && mergeCondition != 0){
-            //     if(tileValue == grid[j][i]){
-            //         mergeCondition++;
-            //         break;
-            //     }else {
-            //         tileValue = grid[j][i];
-            //     }
-            // } 
-            // if(grid[j][i] == 0){
+    // for(i=0; i<4; i++){
+    //     for(j=0; j<4; j++){
+    //         if(grid[j][i] == 0){
+    //             *checkZero = 1;
+    //             break;
+    //         }
+    //     }
+    //     if(*checkZero == 1){
+    //         break;
+    //     }
+    // }
+
+    // for(i=0; i<4; i++){
+    //     for(j = 3; j > 0; j--){
+    //         // if(grid[j][i] == 0){
+    //         //     continue;
+    //         // }else if(grid[j][i] !=0 && mergeCondition == 0){
+    //         //     tileValue = grid[j][i];
+    //         //     mergeCondition++;
+    //         // }else if (grid[j][i] !=0 && mergeCondition != 0){
+    //         //     if(tileValue == grid[j][i]){
+    //         //         mergeCondition++;
+    //         //         break;
+    //         //     }else {
+    //         //         tileValue = grid[j][i];
+    //         //     }
+    //         // } 
+    //         // if(grid[j][i] == 0){
                 
-            //     break;
-            // }else 
-            if(grid[j][i] == grid[j-1][i]){
-                mergeCondition = 1;
-                break;
-            }
-        }
-        // if(mergeCondition == 2){
-        //     break;
-        // }else if(i<3){
-        //     mergeCondition = 0;
-        // }
-        if(mergeCondition == 1){
-            break;
-        }
-        // else if(mergeCondition = 2){
-        //     break;
-        // }
-    }
+    //         //     break;
+    //         // }else 
+    //         if(grid[j][i] == grid[j-1][i]){
+    //             *mergeCondition = 1;
+    //             break;
+    //         }
+    //     }
+    //     // if(mergeCondition == 2){
+    //     //     break;
+    //     // }else if(i<3){
+    //     //     mergeCondition = 0;
+    //     // }
+    //     if(*mergeCondition == 1){
+    //         break;
+    //     }
+    //     // else if(mergeCondition = 2){
+    //     //     break;
+    //     // }
+    // }
 
-    int checkZero = 0;
-    for(i=0; i<4; i++){
-        for(j = 3; j >= 0; j--){ 
-            if(grid[j][i] == 0){
-                checkZero = 1;
-                break;
-            }
-        }
-        if(checkZero == 1){
-            break;
-        }
-    }
+    // for(i=0; i<4; i++){
+    //     for(j = 3; j >= 0; j--){ 
+    //         if(grid[j][i] == 0){
+    //             *checkZero = 1;
+    //             break;
+    //         }
+    //     }
+    //     if(*checkZero == 1){
+    //         break;
+    //     }
+    // }
+    return;
 }
 
 void showTopThreePlayes(FILE* fptr){
