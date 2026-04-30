@@ -11,6 +11,7 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
 void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
 void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]);
 void pressedDown(FILE *fptr, int *moves,int *score, char playerName[],  int grid[4][4]);
+isGameContinue(int *mergeCondition, int *checkZero);
 void showTopThreePlayes(FILE* fptr);
 void gameInsights(FILE* fptr);
 
@@ -46,6 +47,7 @@ int main(){
     //int score=0;
     int option, i, j, k;
     int grid[4][4];
+    srand(time(0));
 
     FILE* fptr;
     fptr= fopen("2048_Game.txt", "a");
@@ -125,7 +127,7 @@ void gamePlay(FILE *fptr, int *moves, int *score, char playerName[], int grid[4]
     int row, col;
     
     while(i<2){
-        srand(time(0));
+        //srand(time(0));
         row = rand() % 4;
         col = rand() % 4;
         if(grid[row][col] == 2){
@@ -267,14 +269,34 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
     }*/
 
     //generating 2 on random spot
-    while(isGenrated){
-        srand(time(0));
-        row = rand() % 4;
-        col = rand() % 4;
-        if(grid[row][col] == 0){
-            grid[row][col] = 2;
-            isGenrated = 0;
+
+
+    // while(isGenrated){
+    //    // srand(time(0));
+    //     row = rand() % 4;
+    //     col = rand() % 4;
+    //     if(grid[row][col] == 0){
+    //         grid[row][col] = 2;
+    //         isGenrated = 0;
+    //     }
+    // }
+
+    int empty[16][2];
+    int count = 0;
+
+    for(i=0;i<4;i++){
+        for(j=0;j<4;j++){
+            if(grid[i][j] == 0){
+                empty[count][0] = i;
+                empty[count][1] = j;
+                count++;
+            }
         }
+    }
+
+    if(count > 0){
+        int r = rand() % count;
+        grid[empty[r][0]][empty[r][1]] = 2;
     }
 
     //printf("this is generating 2 in random\n");
@@ -289,44 +311,70 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
     //checking if merging is possible
     mergeCondition = 0;
     for(i=0; i<4; i++){
-        for(j=0; j<4; j++){
-            if(grid[i][j] == 0){
-                continue;
-            }else if(grid[i][j] !=0 && mergeCondition == 0){
-                    tileValue = grid[i][j];
-                    mergeCondition++;
-            }else if (grid[i][j] !=0 && mergeCondition != 0){
-                if(tileValue == grid[i][j]){
-                    mergeCondition++;
-                    break;
-                }else {
-                    tileValue = grid[i][j];
-                } 
-            } 
-        }
-        if(mergeCondition == 2){
-            break;
-        }
-        mergeCondition = 0;
-    }
-
-    if(mergeCondition != 0){
-        for ( i = 0; i < 4; i++)
-        {
-            for(j=0; j<4; j++){
-                if(grid[i][j] == 0){
-                    mergeCondition = 0;
-                    break;
-                }
-            }
-            if(mergeCondition == 0){
+        for(j=0; j<3; j++){
+            // if(grid[i][j] == 0){
+            //     mergeCondition = 1;
+            //     break;
+            // }else 
+            if(grid[i][j] == grid[i][j+1]){
+                mergeCondition = 1;
                 break;
             }
+            // else if(grid[i][j] !=0 && mergeCondition == 0){
+            //         tileValue = grid[i][j];
+            //         mergeCondition++;
+            // }else if (grid[i][j] !=0 && mergeCondition != 0){
+            //     if(tileValue == grid[i][j]){
+            //         mergeCondition++;
+            //         break;
+            //     }else {
+            //         tileValue = grid[i][j];
+            //     } 
+            // } 
+        }
+        // if(mergeCondition == 2){
+        //     break;
+        // }else if(i<3){
+        //     mergeCondition = 0;
+        // }else 
+        if(mergeCondition == 1){
+            break;
+        }
+        // else if(mergeCondition = 2){
+        //     break;
+        // }
+    }
+
+    int checkZero = 0;
+    for(i=0; i<4; i++){
+        for(j=0; j<3; j++){
+            if(grid[i][j] == 0){
+                checkZero = 1;
+                break;
+            } 
+        } 
+        if(checkZero == 1){
+            break;
         }
     }
+
+    // if(mergeCondition != 0){
+    //     for ( i = 0; i < 4; i++)
+    //     {
+    //         for(j=0; j<4; j++){
+    //             if(grid[i][j] == 0){
+    //                 mergeCondition = 0;
+    //                 break;
+    //             }
+    //         }
+    //         if(mergeCondition == 0){
+    //             break;
+    //         }
+    //     }
+    // }
     //printing
    // printf("\nThis is the actual printing\n");
-    if(mergeCondition == 2 || mergeCondition == 0){
+    if(checkZero == 1 || mergeCondition == 1){
         system("cls");
         //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
@@ -351,7 +399,7 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
         printf("The Game has Finished!\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
-        return;
+        exit(0);
     }
     return;
     //printf("\nI am in pressedLeft bottom\n");
@@ -434,14 +482,33 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
     // }
 
     //generating 2 on random spot
-    while(isGenrated){
-        srand(time(0));
-        row = rand() % 4;
-        col = rand() % 4;
-        if(grid[row][col] == 0){
-            grid[row][col] = 2;
-            isGenrated = 0;
+
+    // while(isGenrated){
+    //     srand(time(0));
+    //     row = rand() % 4;
+    //     col = rand() % 4;
+    //     if(grid[row][col] == 0){
+    //         grid[row][col] = 2;
+    //         isGenrated = 0;
+    //     }
+    // }
+
+    int empty[16][2];
+    int count = 0;
+
+    for(i=0;i<4;i++){
+        for(j=0;j<4;j++){
+            if(grid[i][j] == 0){
+                empty[count][0] = i;
+                empty[count][1] = j;
+                count++;
+            }
         }
+    }
+
+    if(count > 0){
+        int r = rand() % count;
+        grid[empty[r][0]][empty[r][1]] = 2;
     }
 
     //printf("this is generating 2 in random\n");
@@ -456,45 +523,74 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
     //checking if merging is possible
     mergeCondition = 0;
     for(i=0; i<4; i++){
-        for(j = 3; j >= 0; j--){
-            if(grid[i][j] == 0){
-                continue;
-            }else if(grid[i][j] !=0 && mergeCondition == 0){
-                    tileValue = grid[i][j];
-                    mergeCondition++;
-            }else if (grid[i][j] !=0 && mergeCondition != 0){
-                if(tileValue == grid[i][j]){
-                    mergeCondition++;
-                    break;
-                }else {
-                    tileValue = grid[i][j];
-                }
-            } 
-        }
-        if(mergeCondition == 2){
-            break;
-        }
-        mergeCondition = 0;
-    }
+        for(j = 3; j > 0; j--){
+            // if(grid[i][j] == 0){
+            //     continue;
+            // }else if(grid[i][j] !=0 && mergeCondition == 0){
+            //         tileValue = grid[i][j];
+            //         mergeCondition++;
+            // }else if (grid[i][j] !=0 && mergeCondition != 0){
+            //     if(tileValue == grid[i][j]){
+            //         mergeCondition++;
+            //         break;
+            //     }else {
+            //         tileValue = grid[i][j];
+            //     }
+            // } 
 
-    if(mergeCondition != 0){
-        for ( i = 0; i < 4; i++)
-        {
-            for(j=3; j>=0; j--){
-                if(grid[i][j] == 0){
-                    mergeCondition = 0;
-                    break;
-                }
-            }
-            if(mergeCondition == 0){
+            // if(grid[i][j] == 0){
+            //     mergeCondition = 1;
+            //     break;
+            // }else 
+            if(grid[i][j] == grid[i][j-1]){
+                mergeCondition = 1;
                 break;
             }
         }
+        // if(mergeCondition == 2){
+        //     break;
+        // }else if(i<3){
+        //     mergeCondition = 0;
+        // }
+        if(mergeCondition == 1){
+            break;
+        }
+        // else if(mergeCondition = 2){
+        //     break;
+        // }
     }
+
+    int checkZero = 0;
+    for(i=0; i<4; i++){
+        for(j = 3; j > 0; j--){
+            if(grid[i][j] == 0){
+                checkZero = 1;
+                break;
+            }
+        }
+        if(checkZero == 1){
+            break;
+        }
+    }
+
+    // if(mergeCondition != 0){
+    //     for ( i = 0; i < 4; i++)
+    //     {
+    //         for(j=3; j>=0; j--){
+    //             if(grid[i][j] == 0){
+    //                 mergeCondition = 0;
+    //                 break;
+    //             }
+    //         }
+    //         if(mergeCondition == 0){
+    //             break;
+    //         }
+    //     }
+    // }
 
     //printing
    // printf("\nThis is the actual printing\n");
-    if(mergeCondition == 2 || mergeCondition == 0){
+    if(checkZero == 1 || mergeCondition == 1){
         system("cls");
         //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
@@ -519,7 +615,7 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
         printf("The Game has Finished!\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
-        return;
+        exit(0);
     }
     return;
     //printf("\nI am in pressedRight bottom\n");
@@ -600,14 +696,33 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
     // }
 
     //generating 2 on random spot
-    while(isGenrated){
-        srand(time(0));
-        row = rand() % 4;
-        col = rand() % 4;
-        if(grid[row][col] == 0){
-            grid[row][col] = 2;
-            isGenrated = 0;
+
+    // while(isGenrated){
+    //     srand(time(0));
+    //     row = rand() % 4;
+    //     col = rand() % 4;
+    //     if(grid[row][col] == 0){
+    //         grid[row][col] = 2;
+    //         isGenrated = 0;
+    //     }
+    // }
+
+    int empty[16][2];
+    int count = 0;
+
+    for(i=0;i<4;i++){
+        for(j=0;j<4;j++){
+            if(grid[i][j] == 0){
+                empty[count][0] = i;
+                empty[count][1] = j;
+                count++;
+            }
         }
+    }
+
+    if(count > 0){
+        int r = rand() % count;
+        grid[empty[r][0]][empty[r][1]] = 2;
     }
 
     //printf("this is generating 2 in random\n");
@@ -622,45 +737,75 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
     //checking if merging is posible
     mergeCondition = 0;
     for(i=0; i<4; i++){
-        for(j=0; j<4; j++){
-            if(grid[j][i] == 0){
-                continue;
-            }else if(grid[j][i] !=0 && mergeCondition == 0){
-                    tileValue = grid[j][i];
-                    mergeCondition++;
-            }else if (grid[j][i] !=0 && mergeCondition != 0){
-                if(tileValue == grid[j][i]){
-                    mergeCondition++;
-                    break;
-                }else {
-                    tileValue = grid[j][i];
-                }
-            } 
-        }
-        if(mergeCondition == 2){
-            break;
-        }
-        mergeCondition = 0; 
-    }
+        for(j=0; j<3; j++){
+            // if(grid[j][i] == 0){
+            //     continue;
+            // }else if(grid[j][i] !=0 && mergeCondition == 0){
+            //         tileValue = grid[j][i];
+            //         mergeCondition++;
+            // }else if (grid[j][i] !=0 && mergeCondition != 0){
+            //     if(tileValue == grid[j][i]){
+            //         mergeCondition++;
+            //         break;
+            //     }else {
+            //         tileValue = grid[j][i];
+            //     }
+            // } 
 
-    if(mergeCondition != 0){
-        for ( i = 0; i < 4; i++)
-        {
-            for(j=0; j<4; j++){
-                if(grid[j][i] == 0){
-                    mergeCondition = 0;
-                    break;
-                }
-            }
-            if(mergeCondition == 0){
+            // if(grid[j][i] == 0){
+            //     mergeCondition = 1;
+            //     break;
+            // }else 
+            if(grid[j][i] == grid[j+1][i]){
+                mergeCondition = 1;
                 break;
             }
         }
+        // if(mergeCondition == 2){
+        //     break;
+        // }else if(i<3){
+        //     mergeCondition = 0;
+        // } 
+        if(mergeCondition == 1){
+            break;
+        }
+        // else if(mergeCondition = 2){
+        //     break;
+        // }
     }
+
+
+    int checkZero = 0;
+    for(i=0; i<4; i++){
+        for(j=0; j<3; j++){
+            if(grid[j][i] == 0){
+                checkZero = 1;
+                break;
+            }
+        }
+        if(checkZero == 1){
+            break;
+        }
+    }
+
+    // if(mergeCondition != 0){
+    //     for ( i = 0; i < 4; i++)
+    //     {
+    //         for(j=0; j<4; j++){
+    //             if(grid[j][i] == 0){
+    //                 mergeCondition = 0;
+    //                 break;
+    //             }
+    //         }
+    //         if(mergeCondition == 0){
+    //             break;
+    //         }
+    //     }
+    // }
 
     //printing
    // printf("\nThis is the actual printing\n");
-    if(mergeCondition == 2 || mergeCondition == 0){
+    if(checkZero == 1 || mergeCondition == 1){
         system("cls");
         //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
@@ -685,7 +830,7 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
         printf("The Game has Finished!\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
-        return;
+        exit(0);
     }
     return;
     //printf("\nI am in pressedUp bottom\n");
@@ -718,7 +863,7 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
     // }
 
     for (i = 0; i < 4; i++){
-        for ( j = 3; j >= 0; j--)
+        for ( j = 3; j > 0; j--)
         {
             if (grid[j][i] == grid[j-1][i])
             {
@@ -765,14 +910,33 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
     // }
 
     //generating 2 on random spot
-    while(isGenrated){
-        srand(time(0));
-        row = rand() % 4;
-        col = rand() % 4;
-        if(grid[row][col] == 0){
-            grid[row][col] = 2;
-            isGenrated = 0;
+
+    // while(isGenrated){
+    //     srand(time(0));
+    //     row = rand() % 4;
+    //     col = rand() % 4;
+    //     if(grid[row][col] == 0){
+    //         grid[row][col] = 2;
+    //         isGenrated = 0;
+    //     }
+    // }
+
+    int empty[16][2];
+    int count = 0;
+
+    for(i=0;i<4;i++){
+        for(j=0;j<4;j++){
+            if(grid[i][j] == 0){
+                empty[count][0] = i;
+                empty[count][1] = j;
+                count++;
+            }
         }
+    }
+
+    if(count > 0){
+        int r = rand() % count;
+        grid[empty[r][0]][empty[r][1]] = 2;
     }
 
     //printf("this is generating 2 in random\n");
@@ -788,44 +952,72 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
     mergeCondition = 0;
 
     for(i=0; i<4; i++){
-        for(j = 3; j >= 0; j--){
-            if(grid[j][i] == 0){
-                continue;
-            }else if(grid[j][i] !=0 && mergeCondition == 0){
-                tileValue = grid[j][i];
-                mergeCondition++;
-            }else if (grid[j][i] !=0 && mergeCondition != 0){
-                if(tileValue == grid[j][i]){
-                    mergeCondition++;
-                    break;
-                }else {
-                    tileValue = grid[j][i];
-                }
-            } 
-        }
-        if(mergeCondition == 2){
-            break;
-        }
-        mergeCondition = 0;
-    }
-
-    if(mergeCondition != 0){
-        for ( i = 0; i < 4; i++)
-        {
-            for(j=3; j>=0; j--){
-                if(grid[j][i] == 0){
-                    mergeCondition = 0;
-                    break;
-                }
-            }
-            if(mergeCondition == 0){
+        for(j = 3; j > 0; j--){
+            // if(grid[j][i] == 0){
+            //     continue;
+            // }else if(grid[j][i] !=0 && mergeCondition == 0){
+            //     tileValue = grid[j][i];
+            //     mergeCondition++;
+            // }else if (grid[j][i] !=0 && mergeCondition != 0){
+            //     if(tileValue == grid[j][i]){
+            //         mergeCondition++;
+            //         break;
+            //     }else {
+            //         tileValue = grid[j][i];
+            //     }
+            // } 
+            // if(grid[j][i] == 0){
+                
+            //     break;
+            // }else 
+            if(grid[j][i] == grid[j-1][i]){
+                mergeCondition = 1;
                 break;
             }
         }
+        // if(mergeCondition == 2){
+        //     break;
+        // }else if(i<3){
+        //     mergeCondition = 0;
+        // }
+        if(mergeCondition == 1){
+            break;
+        }
+        // else if(mergeCondition = 2){
+        //     break;
+        // }
     }
 
+    int checkZero = 0;
+    for(i=0; i<4; i++){
+        for(j = 3; j >= 0; j--){ 
+            if(grid[j][i] == 0){
+                checkZero = 1;
+                break;
+            }
+        }
+        if(checkZero == 1){
+            break;
+        }
+    }
+
+    // if(mergeCondition != 0){
+    //     for ( i = 0; i < 4; i++)
+    //     {
+    //         for(j=3; j>=0; j--){
+    //             if(grid[j][i] == 0){
+    //                 mergeCondition = 0;
+    //                 break;
+    //             }
+    //         }
+    //         if(mergeCondition == 0){
+    //             break;
+    //         }
+    //     }
+    // }
+
     //printing
-    if(mergeCondition == 2 || mergeCondition == 0){
+    if(checkZero == 1 || mergeCondition == 1){
         system("cls");
         //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
@@ -850,10 +1042,217 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
         printf("The Game has Finished!\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
-        return;
+        exit(0);
     }
     return;
     //printf("\nI am in pressedLeft bottom\n");
+}
+
+isGameContinue(int *mergeCondition, int *checkZero, int grid[4][4]){
+    *mergeCondition = 0;
+    *checkZero = 0;
+    int i, j;
+
+    for(i=0; i<4; i++){
+        for(j=0; j<3; j++){
+            // if(grid[i][j] == 0){
+            //     mergeCondition = 1;
+            //     break;
+            // }else 
+            if(grid[i][j] == grid[i][j+1]){
+                mergeCondition = 1;
+                break;
+            }
+            // else if(grid[i][j] !=0 && mergeCondition == 0){
+            //         tileValue = grid[i][j];
+            //         mergeCondition++;
+            // }else if (grid[i][j] !=0 && mergeCondition != 0){
+            //     if(tileValue == grid[i][j]){
+            //         mergeCondition++;
+            //         break;
+            //     }else {
+            //         tileValue = grid[i][j];
+            //     } 
+            // } 
+        }
+        // if(mergeCondition == 2){
+        //     break;
+        // }else if(i<3){
+        //     mergeCondition = 0;
+        // }else 
+        if(mergeCondition == 1){
+            break;
+        }
+        // else if(mergeCondition = 2){
+        //     break;
+        // }
+    }
+
+    int checkZero = 0;
+    for(i=0; i<4; i++){
+        for(j=0; j<3; j++){
+            if(grid[i][j] == 0){
+                checkZero = 1;
+                break;
+            } 
+        } 
+        if(checkZero == 1){
+            break;
+        }
+    }
+
+    for(i=0; i<4; i++){
+        for(j = 3; j > 0; j--){
+            // if(grid[i][j] == 0){
+            //     continue;
+            // }else if(grid[i][j] !=0 && mergeCondition == 0){
+            //         tileValue = grid[i][j];
+            //         mergeCondition++;
+            // }else if (grid[i][j] !=0 && mergeCondition != 0){
+            //     if(tileValue == grid[i][j]){
+            //         mergeCondition++;
+            //         break;
+            //     }else {
+            //         tileValue = grid[i][j];
+            //     }
+            // } 
+
+            // if(grid[i][j] == 0){
+            //     mergeCondition = 1;
+            //     break;
+            // }else 
+            if(grid[i][j] == grid[i][j-1]){
+                mergeCondition = 1;
+                break;
+            }
+        }
+        // if(mergeCondition == 2){
+        //     break;
+        // }else if(i<3){
+        //     mergeCondition = 0;
+        // }
+        if(mergeCondition == 1){
+            break;
+        }
+        // else if(mergeCondition = 2){
+        //     break;
+        // }
+    }
+
+    int checkZero = 0;
+    for(i=0; i<4; i++){
+        for(j = 3; j > 0; j--){
+            if(grid[i][j] == 0){
+                checkZero = 1;
+                break;
+            }
+        }
+        if(checkZero == 1){
+            break;
+        }
+    }
+
+    for(i=0; i<4; i++){
+        for(j=0; j<3; j++){
+            // if(grid[j][i] == 0){
+            //     continue;
+            // }else if(grid[j][i] !=0 && mergeCondition == 0){
+            //         tileValue = grid[j][i];
+            //         mergeCondition++;
+            // }else if (grid[j][i] !=0 && mergeCondition != 0){
+            //     if(tileValue == grid[j][i]){
+            //         mergeCondition++;
+            //         break;
+            //     }else {
+            //         tileValue = grid[j][i];
+            //     }
+            // } 
+
+            // if(grid[j][i] == 0){
+            //     mergeCondition = 1;
+            //     break;
+            // }else 
+            if(grid[j][i] == grid[j+1][i]){
+                mergeCondition = 1;
+                break;
+            }
+        }
+        // if(mergeCondition == 2){
+        //     break;
+        // }else if(i<3){
+        //     mergeCondition = 0;
+        // } 
+        if(mergeCondition == 1){
+            break;
+        }
+        // else if(mergeCondition = 2){
+        //     break;
+        // }
+    }
+
+
+    int checkZero = 0;
+    for(i=0; i<4; i++){
+        for(j=0; j<3; j++){
+            if(grid[j][i] == 0){
+                checkZero = 1;
+                break;
+            }
+        }
+        if(checkZero == 1){
+            break;
+        }
+    }
+
+    for(i=0; i<4; i++){
+        for(j = 3; j > 0; j--){
+            // if(grid[j][i] == 0){
+            //     continue;
+            // }else if(grid[j][i] !=0 && mergeCondition == 0){
+            //     tileValue = grid[j][i];
+            //     mergeCondition++;
+            // }else if (grid[j][i] !=0 && mergeCondition != 0){
+            //     if(tileValue == grid[j][i]){
+            //         mergeCondition++;
+            //         break;
+            //     }else {
+            //         tileValue = grid[j][i];
+            //     }
+            // } 
+            // if(grid[j][i] == 0){
+                
+            //     break;
+            // }else 
+            if(grid[j][i] == grid[j-1][i]){
+                mergeCondition = 1;
+                break;
+            }
+        }
+        // if(mergeCondition == 2){
+        //     break;
+        // }else if(i<3){
+        //     mergeCondition = 0;
+        // }
+        if(mergeCondition == 1){
+            break;
+        }
+        // else if(mergeCondition = 2){
+        //     break;
+        // }
+    }
+
+    int checkZero = 0;
+    for(i=0; i<4; i++){
+        for(j = 3; j >= 0; j--){ 
+            if(grid[j][i] == 0){
+                checkZero = 1;
+                break;
+            }
+        }
+        if(checkZero == 1){
+            break;
+        }
+    }
 }
 
 void showTopThreePlayes(FILE* fptr){
