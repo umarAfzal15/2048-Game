@@ -15,20 +15,12 @@ void isGameContinue(int *mergeCondition, int *checkZero, int grid[4][4]);
 void showTopThreePlayes(FILE* fptr);
 void gameInsights(FILE* fptr);
 
-//It hides cursor
-void hideCursor() {
+//It hides or shows cursor
+void hideCursor(int visible) {
     HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO info;
     info.dwSize = 100;
-    info.bVisible = FALSE;
-    SetConsoleCursorInfo(consoleHandle, &info);
-}
-
-void showCursor() {
-    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO info;
-    info.dwSize = 100;
-    info.bVisible = TRUE;
+    info.bVisible = visible;
     SetConsoleCursorInfo(consoleHandle, &info);
 }
 
@@ -77,8 +69,7 @@ int main(){
         printf("==>Press: Arrow keys to Play the Game.\n");
         printf("NOTE: During Game pressing other keys will stop the Game\n");
         printf("==>Now Click Enter To Start The Game\n");
-        hideCursor();
-        //scanf(" %c", &ok);
+        hideCursor(0);
         char ok = getchar();
 
         while(1){
@@ -90,9 +81,8 @@ int main(){
                 break;
             }
         }
-        //hideCursor();
+
         system("cls");
-        //fputs(playerName, fptr);
         gamePlay(fptr, &moves, &score, playerName, grid); // function call
         }else if(option==2){
             showTopThreePlayes(fptr);
@@ -117,17 +107,12 @@ int main(){
 }
 
 //this handles Game Play
-void gamePlay(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]) {
-    // Game Play Here
-    //FILE** fptr1 = fptr; 
+void gamePlay(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]) { 
     int keyPressed;
-    //int score=0;
-    //int moves=0;
     int i=0, j;
     int row, col;
     
     while(i<2){
-        //srand(time(0));
         row = rand() % 4;
         col = rand() % 4;
         if(grid[row][col] == 2){
@@ -137,7 +122,7 @@ void gamePlay(FILE *fptr, int *moves, int *score, char playerName[], int grid[4]
             i++;
         }
     }
-    //printf("%d%d\n", grid[row][col]);
+
     playerName[strcspn(playerName, "\n")] = '\0';
     printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
     for(int i=0; i<4; i++){
@@ -159,44 +144,39 @@ void gamePlay(FILE *fptr, int *moves, int *score, char playerName[], int grid[4]
     while(1){
         keyPressed = _getch();
         if(keyPressed == 0 || keyPressed == 224){
-            //printf("I am in if\n");
             (*moves)++;
             switch (_getch()) {
                 case 72: 
-                    //printf("Up Arrow\n");
                     pressedUp(fptr, moves, score, playerName, grid);
                     break;
                 case 80:
-                    //printf("Down Arrow\n");
                     pressedDown(fptr, moves, score, playerName, grid);
                     break;
                 case 75:
-                    //printf("Left Arrow\n");
                     pressedLeft(fptr, moves, score, playerName, grid);
                     break;
                 case 77:
-                    //printf("Right Arrow\n");
                     pressedRight(fptr, moves, score, playerName, grid);
                     break;
                 default:
                     break;
             }
         }else {
-            printf("\n\t\t\t  Thank you for playing the Game!\n");
+            printf("\n\t\t:::::::The Game has Finished!:::::::\n");
             fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
             fclose(fptr);
             return;
         }
     }
-    return;
 
+    return;
 }
 
 //this handles left key move
 void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
-    int mergeCondition=0, tileValue, mergedposition=0, checkZero = 0;
-    int i, j, k, row, col, swap=0, isGenrated=1;
+    int mergeCondition=0, tileValue, checkZero = 0;
+    int i, j, k, swap = 0;
 
     for(k=0; k<4; k++){
         for(i=0; i<4; i++){
@@ -212,15 +192,7 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
         }
     }
 
-    //("this is swaping\n");
-
-    /*for(i=0; i<4; i++){
-        for(j=0; j<4; j++){
-            printf("%d ", grid[i][j]);
-        }
-        printf("\n");
-    }*/
-
+    //this is merging
     for (i = 0; i < 4; i++){
         for ( j = 0; j < 4; j++)
         {
@@ -234,15 +206,6 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
         }
         
     }
-    
-    /*printf("this is merging\n");
-
-    for(i=0; i<4; i++){
-        for(j=0; j<4; j++){
-            printf("%d ", grid[i][j]);
-        }
-        printf("\n");
-    }*/
 
     //swaping again
     for(k=0; k<4; k++){
@@ -259,28 +222,6 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
         }
     }
 
-    /*printf("this is swaping again\n");
-
-    for(i=0; i<4; i++){
-        for(j=0; j<4; j++){
-            printf("%d ", grid[i][j]);
-        }
-        printf("\n");
-    }*/
-
-    //generating 2 on random spot
-
-
-    // while(isGenrated){
-    //    // srand(time(0));
-    //     row = rand() % 4;
-    //     col = rand() % 4;
-    //     if(grid[row][col] == 0){
-    //         grid[row][col] = 2;
-    //         isGenrated = 0;
-    //     }
-    // }
-
     int empty[16][2];
     int count = 0;
 
@@ -299,37 +240,11 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
         grid[empty[r][0]][empty[r][1]] = 2;
     }
 
-    //printf("this is generating 2 in random\n");
-    // printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
     //checking if merging is possible
     isGameContinue(&mergeCondition, &checkZero, grid);
 
-    // if(mergeCondition != 0){
-    //     for ( i = 0; i < 4; i++)
-    //     {
-    //         for(j=0; j<4; j++){
-    //             if(grid[i][j] == 0){
-    //                 mergeCondition = 0;
-    //                 break;
-    //             }
-    //         }
-    //         if(mergeCondition == 0){
-    //             break;
-    //         }
-    //     }
-    // }
-    //printing
-   // printf("\nThis is the actual printing\n");
     if(checkZero == 1 || mergeCondition == 1){
         system("cls");
-        //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
             printf("\t\t\t\t");
@@ -340,7 +255,6 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
         }
     }else {
         system("cls");
-        //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
             printf("\t\t\t\t");
@@ -349,20 +263,20 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
             }
             printf("\n\n");
         }
-        printf("The Game has Finished!\n");
+        printf("\n\t\t  :::::::The Game has Finished NO Possible Moves!:::::::\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
         exit(0);
     }
+
     return;
-    //printf("\nI am in pressedLeft bottom\n");
 }
 
 
 void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
-    int mergeCondition=0, tileValue, mergedposition=0, checkZero = 0;
-    int i, j, k, row, col, swap=0, isGenrated=1;
+    int mergeCondition=0, tileValue, checkZero = 0;
+    int i, j, k, swap = 0;
 
     for(k=0; k<4; k++){
         for(i=0; i<4; i++){
@@ -378,15 +292,7 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
         }
     }
 
-    // printf("this is swaping\n");
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
+    //this is merging
     for (i = 0; i < 4; i++){
         for ( j = 3; j >= 0; j--)
         {
@@ -400,15 +306,6 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
         }
         
     }
-    
-    // printf("this is merging\n");
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
 
     //swaping again
     for(k=0; k<4; k++){
@@ -425,27 +322,6 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
         }
     }
 
-    // printf("this is swaping again\n");
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    //generating 2 on random spot
-
-    // while(isGenrated){
-    //     srand(time(0));
-    //     row = rand() % 4;
-    //     col = rand() % 4;
-    //     if(grid[row][col] == 0){
-    //         grid[row][col] = 2;
-    //         isGenrated = 0;
-    //     }
-    // }
-
     int empty[16][2];
     int count = 0;
 
@@ -464,38 +340,11 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
         grid[empty[r][0]][empty[r][1]] = 2;
     }
 
-    //printf("this is generating 2 in random\n");
-    // printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
     //checking if merging is possible
     isGameContinue(&mergeCondition, &checkZero, grid);
 
-    // if(mergeCondition != 0){
-    //     for ( i = 0; i < 4; i++)
-    //     {
-    //         for(j=3; j>=0; j--){
-    //             if(grid[i][j] == 0){
-    //                 mergeCondition = 0;
-    //                 break;
-    //             }
-    //         }
-    //         if(mergeCondition == 0){
-    //             break;
-    //         }
-    //     }
-    // }
-
-    //printing
-   // printf("\nThis is the actual printing\n");
     if(checkZero == 1 || mergeCondition == 1){
         system("cls");
-        //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
             printf("\t\t\t\t");
@@ -506,7 +355,6 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
         }
     }else {
         system("cls");
-        //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
             printf("\t\t\t\t");
@@ -515,19 +363,20 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
             }
             printf("\n\n");
         }
-        printf("The Game has Finished!\n");
+        printf("\n\t\t  :::::::The Game has Finished NO Possible Moves!:::::::\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
         exit(0);
     }
+
     return;
-    //printf("\nI am in pressedRight bottom\n");
 }
 void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
 
-    int mergeCondition=0, tileValue, mergedposition=0, checkZero = 0;
-    int i, j, k, row, col, swap=0, isGenrated=1;
+   int mergeCondition=0, tileValue, checkZero = 0;
+    int i, j, k, swap = 0;
 
+    //swapping
     for(k=0; k<4; k++){
         for(i=0; i<4; i++){
             for(j=0; j<4; j++){
@@ -542,15 +391,7 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
         }
     }
 
-    // printf("this is swaping\n");
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
+    //merging
     for (i = 0; i < 4; i++){
         for ( j = 0; j < 4; j++)
         {
@@ -565,16 +406,7 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
         
     }
     
-    // printf("this is merging\n");
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    //swaping again
+    //swapping again
     for(k=0; k<4; k++){
         for(i=0; i<4; i++){
             for(j=0; j<4; j++){
@@ -589,27 +421,6 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
         }
     }
 
-    // printf("this is swaping again\n");
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    //generating 2 on random spot
-
-    // while(isGenrated){
-    //     srand(time(0));
-    //     row = rand() % 4;
-    //     col = rand() % 4;
-    //     if(grid[row][col] == 0){
-    //         grid[row][col] = 2;
-    //         isGenrated = 0;
-    //     }
-    // }
-
     int empty[16][2];
     int count = 0;
 
@@ -628,38 +439,11 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
         grid[empty[r][0]][empty[r][1]] = 2;
     }
 
-    //printf("this is generating 2 in random\n");
-    // printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    //checking if merging is posible
+    //checking game continuity
     isGameContinue(&mergeCondition, &checkZero, grid);
 
-    // if(mergeCondition != 0){
-    //     for ( i = 0; i < 4; i++)
-    //     {
-    //         for(j=0; j<4; j++){
-    //             if(grid[j][i] == 0){
-    //                 mergeCondition = 0;
-    //                 break;
-    //             }
-    //         }
-    //         if(mergeCondition == 0){
-    //             break;
-    //         }
-    //     }
-    // }
-
-    //printing
-   // printf("\nThis is the actual printing\n");
     if(checkZero == 1 || mergeCondition == 1){
         system("cls");
-        //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
             printf("\t\t\t\t");
@@ -670,7 +454,6 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
         }
     }else {
         system("cls");
-        //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
             printf("\t\t\t\t");
@@ -679,17 +462,17 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
             }
             printf("\n\n");
         }
-        printf("The Game has Finished!\n");
+        printf("\n\t\t  :::::::The Game has Finished NO Possible Moves!:::::::\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
         exit(0);
     }
+
     return;
-    //printf("\nI am in pressedUp bottom\n");
 }
 void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid[4][4]){
-    int mergeCondition=0, tileValue, mergedposition=0, checkZero = 0;
-    int i, j, k, row, col, swap=0, isGenrated=1;
+    int mergeCondition=0, tileValue, checkZero = 0;
+    int i, j, k, swap = 0;
 
     for(k=0; k<4; k++){
         for(i=0; i<4; i++){
@@ -704,15 +487,6 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
             }
         }
     }
-
-    // printf("this is swaping\n");
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
 
     for (i = 0; i < 4; i++){
         for ( j = 3; j > 0; j--)
@@ -727,17 +501,8 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
         }
         
     }
-    
-    // printf("this is merging\n");
 
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    //swaping again
+    //swapping again
     for(k=0; k<4; k++){
         for(i=0; i<4; i++){
             for(j=0; j<4; j++){
@@ -751,27 +516,6 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
             }
         }
     }
-
-    // printf("this is swaping again\n");
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    //generating 2 on random spot
-
-    // while(isGenrated){
-    //     srand(time(0));
-    //     row = rand() % 4;
-    //     col = rand() % 4;
-    //     if(grid[row][col] == 0){
-    //         grid[row][col] = 2;
-    //         isGenrated = 0;
-    //     }
-    // }
 
     int empty[16][2];
     int count = 0;
@@ -791,38 +535,11 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
         grid[empty[r][0]][empty[r][1]] = 2;
     }
 
-    //printf("this is generating 2 in random\n");
-    // printf("Name: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         printf("%d ", grid[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-    //checking if merging is possible
-    mergeCondition = 0;
+    //checking game continuity
     isGameContinue(&mergeCondition, &checkZero, grid);
 
-    // if(mergeCondition != 0){
-    //     for ( i = 0; i < 4; i++)
-    //     {
-    //         for(j=3; j>=0; j--){
-    //             if(grid[j][i] == 0){
-    //                 mergeCondition = 0;
-    //                 break;
-    //             }
-    //         }
-    //         if(mergeCondition == 0){
-    //             break;
-    //         }
-    //     }
-    // }
-
-    //printing
     if(checkZero == 1 || mergeCondition == 1){
         system("cls");
-        //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
             printf("\t\t\t\t");
@@ -833,7 +550,6 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
         }
     }else {
         system("cls");
-        //printf("\nThis is the actual printing\n");
         printf("\t\t\tName: %s,       Score: %d,      Moves: %d\n\n", playerName, *score, *moves);
         for(i=0; i<4; i++){
             printf("\t\t\t\t");
@@ -842,13 +558,12 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
             }
             printf("\n\n");
         }
-        printf("The Game has Finished!\n");
+        printf("\n\t\t  :::::::The Game has Finished NO Possible Moves!:::::::\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
         exit(0);
     }
     return;
-    //printf("\nI am in pressedLeft bottom\n");
 }
 
 void isGameContinue(int *mergeCondition, int *checkZero, int grid[4][4]){
@@ -877,146 +592,6 @@ void isGameContinue(int *mergeCondition, int *checkZero, int grid[4][4]){
         }
     }
 
-    // for(i=0; i<4; i++){
-    //     for(j = 3; j > 0; j--){
-    //         // if(grid[i][j] == 0){
-    //         //     continue;
-    //         // }else if(grid[i][j] !=0 && mergeCondition == 0){
-    //         //         tileValue = grid[i][j];
-    //         //         mergeCondition++;
-    //         // }else if (grid[i][j] !=0 && mergeCondition != 0){
-    //         //     if(tileValue == grid[i][j]){
-    //         //         mergeCondition++;
-    //         //         break;
-    //         //     }else {
-    //         //         tileValue = grid[i][j];
-    //         //     }
-    //         // } 
-
-    //         // if(grid[i][j] == 0){
-    //         //     mergeCondition = 1;
-    //         //     break;
-    //         // }else 
-    //         if(grid[i][j] == grid[i][j-1]){
-    //             *mergeCondition = 1;
-    //             break;
-    //         }
-    //     }
-    //     // if(mergeCondition == 2){
-    //     //     break;
-    //     // }else if(i<3){
-    //     //     mergeCondition = 0;
-    //     // }
-    //     if(*mergeCondition == 1){
-    //         break;
-    //     }
-    //     // else if(mergeCondition = 2){
-    //     //     break;
-    //     // }
-    // }
-
-    // for(i=0; i<4; i++){
-    //     for(j = 3; j >= 0; j--){
-    //         if(grid[i][j] == 0){
-    //             *checkZero = 1;
-    //             break;
-    //         }
-    //     }
-    //     if(*checkZero == 1){
-    //         break;
-    //     }
-    // }
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<3; j++){
-    //         // if(grid[j][i] == 0){
-    //         //     continue;
-    //         // }else if(grid[j][i] !=0 && mergeCondition == 0){
-    //         //         tileValue = grid[j][i];
-    //         //         mergeCondition++;
-    //         // }else if (grid[j][i] !=0 && mergeCondition != 0){
-    //         //     if(tileValue == grid[j][i]){
-    //         //         mergeCondition++;
-    //         //         break;
-    //         //     }else {
-    //         //         tileValue = grid[j][i];
-    //         //     }
-    //         // } 
-
-    //         // if(grid[j][i] == 0){
-    //         //     mergeCondition = 1;
-    //         //     break;
-    //         // }else 
-    //         if(grid[j][i] == grid[j+1][i]){
-    //             *mergeCondition = 1;
-    //             break;
-    //         }
-    //     } 
-    //     if(*mergeCondition == 1){
-    //         break;
-    //     }
-    // }
-
-    // for(i=0; i<4; i++){
-    //     for(j=0; j<4; j++){
-    //         if(grid[j][i] == 0){
-    //             *checkZero = 1;
-    //             break;
-    //         }
-    //     }
-    //     if(*checkZero == 1){
-    //         break;
-    //     }
-    // }
-
-    // for(i=0; i<4; i++){
-    //     for(j = 3; j > 0; j--){
-    //         // if(grid[j][i] == 0){
-    //         //     continue;
-    //         // }else if(grid[j][i] !=0 && mergeCondition == 0){
-    //         //     tileValue = grid[j][i];
-    //         //     mergeCondition++;
-    //         // }else if (grid[j][i] !=0 && mergeCondition != 0){
-    //         //     if(tileValue == grid[j][i]){
-    //         //         mergeCondition++;
-    //         //         break;
-    //         //     }else {
-    //         //         tileValue = grid[j][i];
-    //         //     }
-    //         // } 
-    //         // if(grid[j][i] == 0){
-                
-    //         //     break;
-    //         // }else 
-    //         if(grid[j][i] == grid[j-1][i]){
-    //             *mergeCondition = 1;
-    //             break;
-    //         }
-    //     }
-    //     // if(mergeCondition == 2){
-    //     //     break;
-    //     // }else if(i<3){
-    //     //     mergeCondition = 0;
-    //     // }
-    //     if(*mergeCondition == 1){
-    //         break;
-    //     }
-    //     // else if(mergeCondition = 2){
-    //     //     break;
-    //     // }
-    // }
-
-    // for(i=0; i<4; i++){
-    //     for(j = 3; j >= 0; j--){ 
-    //         if(grid[j][i] == 0){
-    //             *checkZero = 1;
-    //             break;
-    //         }
-    //     }
-    //     if(*checkZero == 1){
-    //         break;
-    //     }
-    // }
     return;
 }
 
@@ -1065,14 +640,14 @@ void showTopThreePlayes(FILE* fptr){
     }
 
     fclose(fptr);
-    hideCursor();
+    hideCursor(0);
     getchar();
     system("cls");
     return;
 }
 
 void gameInsights(FILE* fptr){
-    showCursor();
+    hideCursor(1);
     char name[50];
     char searchName[50];
 
@@ -1095,7 +670,7 @@ void gameInsights(FILE* fptr){
 
     printf("Total Games Played: %d", played);
     fclose(fptr);
-    hideCursor();
+    hideCursor(0);
     getchar();
     system("cls");
     return;
