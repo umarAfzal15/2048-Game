@@ -1,4 +1,3 @@
-//need to debug end game logic
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
