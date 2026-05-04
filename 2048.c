@@ -62,6 +62,23 @@ int main(){
         if(option==1){
         printf("Please Enter Your Name: ");
         fgets(playerName, sizeof(playerName), stdin);
+
+        i = 0;
+        while(1){
+            if(playerName[i] == '\0'){
+                break;
+            }
+            if((playerName[i] >= 'a' && playerName[i] <= 'z') || (playerName[i] >= 'A' && playerName[i] <= 'Z') || playerName[i] == ' ' || playerName[i] == '\n'){
+                i++;
+                continue;
+            }else {
+                printf("ERROR: Name cannot have numbers or any Other characters\n");
+                printf("Please Enter Your Name: ");
+                fgets(playerName, sizeof(playerName), stdin);
+                i = 0;
+            }
+        }
+
         system("cls");
         printf("\n~~~~~Let's Start a small Tutorial~~~~~\n");
 
@@ -657,14 +674,35 @@ void gameInsights(FILE* fptr){
     printf("Enter your Name: ");
     fgets(name, sizeof(name), stdin);
     name[strcspn(name, "\n")] = '\0';
+
+    int i = 0;
+    while(1){
+        if(name[i] == '\0'){
+            break;
+        }
+        if((name[i] >= 'a' && name[i] <= 'z') || (name[i] >= 'A' && name[i] <= 'Z') || name[i] == ' ' || name[i] == '\n'){
+            i++;
+            continue;
+        }else {
+            printf("ERROR: Name cannot have numbers or any Other characters\n");
+            printf("Please Enter Your Name: ");
+            fgets(name, sizeof(name), stdin);
+            i = 0;
+        }
+    }
+
     printf("~~~~~Your insights~~~~~\n");
-    int i=1;
+    i=1;
     while (fscanf(fptr, " %49[^,],%d,%d", searchName, &Score, &Moves) == 3){
         if (strcmp(searchName, name) == 0) {
             printf("Game No.%d): Name: %s,\tScore: %d,\tMoves: %d\n", i, searchName, Score, Moves);
             played++;
             i++;
         }
+    }
+
+    if(played == 0){
+        printf("You have not played any Game Yet\n");
     }
 
     printf("Total Games Played: %d", played);
