@@ -23,12 +23,6 @@ void hideCursor(int visible) {
     SetConsoleCursorInfo(consoleHandle, &info);
 }
 
-void resetCursor() {
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD cursorPosition = {0, 0};
-    SetConsoleCursorPosition(hConsole, cursorPosition);
-}
-
 //this is main
 int main(){
     system("cls");
@@ -68,7 +62,9 @@ int main(){
             if(playerName[i] == '\0'){
                 break;
             }
-            if((playerName[i] >= 'a' && playerName[i] <= 'z') || (playerName[i] >= 'A' && playerName[i] <= 'Z') || playerName[i] == ' ' || playerName[i] == '\n'){
+            if((playerName[i] >= 'a' && playerName[i] <= 'z') ||
+             (playerName[i] >= 'A' && playerName[i] <= 'Z') ||
+              playerName[i] == ' ' || playerName[i] == '\n'){
                 i++;
                 continue;
             }else {
