@@ -104,7 +104,8 @@ int main(){
             printf("Thank You for Playing the Game!");
             exit(0);
         }
-
+        score=0;
+        moves=0;
         printf("\n~~~~~~Please Select From The Menu~~~~~~\n");
         printf("1. Play 2048 Game\n");
         printf("2. Show Top Three players\n");
@@ -278,6 +279,8 @@ void pressedLeft(FILE *fptr, int *moves, int *score, char playerName[], int grid
         printf("\n\t\t  :::::::The Game has Finished NO Possible Moves!:::::::\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
+        *score=0;
+        *moves=0;
         exit(0);
     }
 
@@ -378,6 +381,8 @@ void pressedRight(FILE *fptr, int *moves, int *score, char playerName[], int gri
         printf("\n\t\t  :::::::The Game has Finished NO Possible Moves!:::::::\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
+        *score=0;
+        *moves=0;
         exit(0);
     }
 
@@ -477,6 +482,8 @@ void pressedUp(FILE *fptr, int *moves, int *score, char playerName[], int grid[4
         printf("\n\t\t  :::::::The Game has Finished NO Possible Moves!:::::::\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
+        *score=0;
+        *moves=0;
         exit(0);
     }
 
@@ -573,6 +580,8 @@ void pressedDown(FILE *fptr, int *moves, int *score, char playerName[], int grid
         printf("\n\t\t  :::::::The Game has Finished NO Possible Moves!:::::::\n");
         fprintf(fptr, "%s,%d,%d\n", playerName, *score, *moves);
         fclose(fptr);
+        *score=0;
+        *moves=0;
         exit(0);
     }
     return;
